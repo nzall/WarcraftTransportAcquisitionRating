@@ -1,7 +1,7 @@
 local wTAR = LibStub("AceAddon-3.0"):NewAddon("WarcraftTransportAcquisitionRating")
 
 function wTAR:OnEnable()
-    MountJournal.ListScrollFrame:SetScript("OnUpdate", MountJournal_UpdateMountList);    
+	MountJournal.ListScrollFrame:SetScript("OnUpdate", MountJournal_UpdateMountList);    
 end
 
 function MountJournal_UpdateMountList()
@@ -38,12 +38,14 @@ function MountJournal_UpdateMountList()
 			local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(index);
 			local needsFanfare = C_MountJournal.NeedsFanfare(mountID);
 
-			if not isCollected and wTAR.data[mountID] then
-				local mountWTAR = wTAR.data[mountID].rating;
-				button.name:SetText(creatureName + ", WTAR = " + mountWTAR);
+			-- BEGIN CUSTOM LOGIC:
+			-- check if there's a rating, append it if there is one.
+			if not isCollected and wTAR.data[mountID] and wTAR.data[mountID].rating then
+				button.name:SetText(creatureName + ", WTAR = " + wTAR.data[mountID].rating);
 			else
 				button.name:SetText(creatureName);			
 			end
+			--END CUSTOM LOGIC
 			
 
 			button.icon:SetTexture(needsFanfare and COLLECTIONS_FANFARE_ICON or icon);
