@@ -5,6 +5,7 @@ function wTAR:OnEnable()
 end
 
 function MountJournal_UpdateMountList()
+	print("Update was called");
 	local scrollFrame = MountJournal.ListScrollFrame;
 	local offset = HybridScrollFrame_GetOffset(scrollFrame);
 	local buttons = scrollFrame.buttons;
@@ -37,7 +38,14 @@ function MountJournal_UpdateMountList()
 			local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(index);
 			local needsFanfare = C_MountJournal.NeedsFanfare(mountID);
 
-			button.name:SetText(creatureName);
+			if not isCollected and wTAR.data[mountID] then
+				local mountWTAR = wTAR.data[mountID].rating;
+				button.name:SetText(creatureName + ", WTAR = " + mountWTAR);
+			else
+				button.name:SetText(creatureName);			
+			end
+			
+
 			button.icon:SetTexture(needsFanfare and COLLECTIONS_FANFARE_ICON or icon);
 			button.new:SetShown(needsFanfare);
 			button.newGlow:SetShown(needsFanfare);
@@ -82,7 +90,7 @@ function MountJournal_UpdateMountList()
 					button.icon:SetDesaturated(true);
 					button.DragButton:SetEnabled(false);
 					button.icon:SetAlpha(0.25);
-					button.additionalText = "test";
+					button.additionalText = nil;
 					button.name:SetFontObject("GameFontDisable");
 				end
 			end
